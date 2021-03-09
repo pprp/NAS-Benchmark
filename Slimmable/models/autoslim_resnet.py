@@ -28,6 +28,7 @@ class Block(nn.Module):
         self.body = nn.Sequential(*layers)
 
         self.residual_connection = stride == 1 and inp == outp
+        
         if not self.residual_connection:
             self.shortcut = nn.Sequential(
                 SlimmableConv2d(inp, outp, 1, stride=stride, bias=False),
@@ -62,15 +63,14 @@ class Model(nn.Module):
                 56: [6, 6, 6],
                 101: [11, 11, 11],
             }
-            self.block_setting = self.block_setting_dict[FLAGS.depth]
+            self.block_setting = self.block_setting_dict[FLAGS.depth] # 50
             # feats = [32, 64, 128]
             # feats = [int(n_feat * FLAGS.width_mult) for n_feat in feats]
             channels = [
                 int(16 * width_mult) for width_mult in FLAGS.width_mult_list]
             self.features.append(
                 nn.Sequential(
-                    SlimmableConv2d(
-                        [3 for _ in range(len(channels))],
+                    SlimmableConv2d([3 for _ in range(len(channels))],
                         channels, 3, 1, 3, bias=False),
                     SwitchableBatchNorm2d(channels),
                     nn.ReLU(inplace=True),
@@ -100,14 +100,17 @@ class Model(nn.Module):
 
         # body
         for stage_id, n in enumerate(self.block_setting):
-            for i in range(n):
+            for i in range(n): # 重复n次 n=3
                 if i == 0:
-                    outp = pop_channels(FLAGS.channel_num_list)
+                    outp = pop_channels(FLAGS.channel_num_list) # 从头开始，一个一个取出来
+
                 midp1 = pop_channels(FLAGS.channel_num_list)
                 midp2 = pop_channels(FLAGS.channel_num_list)
                 outp = pop_channels(FLAGS.channel_num_list)
+
                 if i == 0 and stage_id != 0:
                     self.features.append(
+                        # channels
                         Block(channels, outp, midp1, midp2, 2))
                 else:
                     self.features.append(
