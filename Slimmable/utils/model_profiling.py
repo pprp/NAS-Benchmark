@@ -73,6 +73,7 @@ def module_profiling(self, input, output, verbose):
         self.n_params = get_params(self)
         self.n_seconds = run_forward(self, input)
         self.name = conv_module_name_filter(self.__repr__())
+        
     elif isinstance(self, nn.ConvTranspose2d):
         self.n_macs = (ins[1] * outs[1] *
                        self.kernel_size[0] * self.kernel_size[1] *

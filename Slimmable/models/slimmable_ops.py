@@ -12,6 +12,7 @@ class SwitchableBatchNorm2d(nn.Module):
         bns = []
         for i in num_features_list:
             bns.append(nn.BatchNorm2d(i))
+
         self.bn = nn.ModuleList(bns)
         self.width_mult = max(FLAGS.width_mult_list)
         self.ignore_model_profiling = True

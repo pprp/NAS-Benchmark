@@ -154,3 +154,10 @@ class Model(nn.Module):
                 n = m.weight.size(1)
                 m.weight.data.normal_(0, 0.01)
                 m.bias.data.zero_()
+
+
+if __name__ == "__main__":
+    model = Model(num_classes=100, input_size=224)
+    inputs = torch.zeros(12, 3, 224, 224)
+    outputs = model(inputs)
+    print(outputs.shape)
