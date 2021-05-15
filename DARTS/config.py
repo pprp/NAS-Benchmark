@@ -64,7 +64,7 @@ class SearchConfig(BaseConfig):
                             help='weight decay for alpha')
         parser.add_argument('--data_path', default="./data", help="Where to look for the data")
         parser.add_argument('--layers_augment', type=int, default=20, help="nb of layers for augment")
-        parser.add_argument('--path', type=str, default='/cache/darts/searchs')
+        parser.add_argument('--path', type=str, default='./darts/searchs')
 
         return parser
 
